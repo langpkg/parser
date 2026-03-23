@@ -1,0 +1,23 @@
+{
+	"type"              : "lib",
+	"template"          : "clean",
+	"pm"                : "bun",
+	"repo": {
+		"org"           : "langpkg",
+		"name"          : "parser",
+		"version"       : "0.0.1",
+		"desc"          : "A fast, minimal, and robust parser for your programming language.",
+		"kw"            : ["language", "package", "parser"],
+		"license"       : "MIT",
+		"issues"        : "https://github.com/langpkg/parser/issues",
+		"homepage"      : "https://github.com/langpkg/parser#readme",
+		"git_url"       : "git+https://github.com/langpkg/parser.git"
+	},
+	"author": {
+		"id"            : "maysara-elshewehy",
+		"name"          : "Maysara Elshewehy",
+		"email"         : "maysara.elshewehy@gmail.com",
+		"url"           : "https://github.com/maysara-elshewehy"
+	},
+	"createdAt"         : "2026-03-20T08:02:59.174Z"
+}

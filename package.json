@@ -1,0 +1,59 @@
+{
+	"name"                             : "@langpkg/parser",
+	"version"                          : "0.0.1",
+	"description"                      : "A fast, minimal, and robust parser for your programming language.",
+	"keywords"                         : ["language", "package", "parser"],
+	"license"                          : "MIT",
+	"homepage"                         : "https://github.com/langpkg/parser#readme",
+	"bugs": {
+		"url"                          : "https://github.com/langpkg/parser/issues"
+	},
+	"author": {
+		"name"                         : "Maysara Elshewehy",
+		"email"                        : "maysara.elshewehy@gmail.com",
+		"url"                          : "https://github.com/maysara-elshewehy"
+	},
+	"repository": {
+		"type"                         : "git",
+		"url"                          : "git+https://github.com/langpkg/parser.git"
+	},
+	"type"                             : "module",
+	"main"                             : "./dist/index.js",
+	"types"                            : "./dist/index.d.ts",
+	"files"                            : ["dist"],
+	"exports": {
+		".": {
+			"types"                    : "./dist/index.d.ts",
+			"import"                   : "./dist/index.js",
+			"require"                  : "./dist/index.js"
+		}
+	},
+	"scripts": {
+		"build"                        : "tsup",
+		"lint"                         : "eslint src --ext .ts",
+		"test"                         : "bun test",
+		"bench"                        : "bun run bench/index.bench.ts"
+	},
+	"engines": {
+		"bun"                          : ">=1.3.3"
+	},
+	"peerDependencies": {
+		"bun"                          : "^1.3.11"
+	},
+	"dependencies": {
+	},
+	"devDependencies": {
+		"@eslint/js"                   : "^9.39.4",
+		"@stylistic/eslint-plugin"     : "^5.10.0",
+		"@types/bun"                   : "^1.3.11",
+		"@types/node"                  : "^20.19.37",
+		"bun-plugin-dts"               : "^0.3.0",
+		"bun-types"                    : "^1.3.11",
+		"mitata"                       : "^1.0.34",
+		"chevrotain"                   : "^12.0.0",
+		"ts-node"                      : "^10.9.2",
+		"tsup"                         : "^8.5.1",
+		"typescript"                   : "^5.9.3",
+		"typescript-eslint"            : "^8.57.1"
+	}
+}
