@@ -13,7 +13,7 @@
         <b>Up to ~10x faster than chevrotain</b>.
         <br>
     </p>
-    <img data="version" src="https://img.shields.io/badge/v-0.1.1-black"/>
+    <img data="version" src="https://img.shields.io/badge/v-0.1.2-black"/>
     <a href="https://github.com/langpkg"><img src="https://img.shields.io/badge/@-langpkg-black"/></a>
     <br>
     <img src="https://img.shields.io/badge/zero-dependencies-blue"/>
@@ -377,17 +377,6 @@
     > Inspired by [@je-es/parser](https://github.com/je-es/parser) and [Chevrotain](https://github.com/chevrotain/chevrotain).
 
     > Built as part of the Mine language compiler toolchain.
-
-    <br>
-    <br>
-
-- ## Dev Notes 📝
-
-    > I'm currently working on **+10 packages** simultaneously, so **sometimes** i use the AI to write some **parts of the documentation** -- if you spot something incorrect that I may have missed, please **open an issue** and let me know.
-    >
-    > And **if you'd like to fix something yourself**, feel free to **fork the repo** and **open a pull request** -- I'll review it and happily merge it if it looks good.
-    >
-    >Thank you!
 
 <!-- ╚═════════════════════════════════════════════════════════════════╝ -->
 

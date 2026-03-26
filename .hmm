@@ -5,7 +5,7 @@
 	"repo": {
 		"org"           : "langpkg",
 		"name"          : "parser",
-		"version"       : "0.1.1",
+		"version"       : "0.1.2",
 		"desc"          : "A fast, minimal, and robust parser for your programming language.",
 		"kw"            : ["language", "package", "parser"],
 		"license"       : "MIT",
