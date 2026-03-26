@@ -1,9 +1,12 @@
+import { Span, Token } from '@langpkg/lexer';
+export { Span, Token } from '@langpkg/lexer';
+
 type ResultStatus = 'unset' | 'failed' | 'passed';
 type ResultMode = 'unset' | 'token' | 'optional' | 'choice' | 'repeat' | 'seq' | 'pratt' | 'custom';
 interface TokenSource {
     source_kind: 'token-source';
-    kind: string;
-    value?: string;
+    type: string;
+    text?: string;
     span?: Span;
 }
 interface OptionalSource {
@@ -61,7 +64,7 @@ declare class Result {
     isFullyPassed(): boolean;
     isOptionalPassed(): boolean;
     isCustom(tag?: string): boolean;
-    getTokenKind(): string | undefined;
+    getTokenType(): string | undefined;
     getTokenSpan(): Span | undefined;
     getOptionalResult(): Result | null | undefined;
     getChoiceIndex(): number | undefined;
@@ -138,18 +141,9 @@ declare class Parser {
     private _reset;
 }
 
-interface Token {
-    kind: string;
-    value: string | null;
-    span: Span;
-}
 interface MiniToken {
     kind: string;
     value: string | null;
-}
-interface Span {
-    start: number;
-    end: number;
 }
 /**
  * Conditional context passed to predicate function.
@@ -503,4 +497,4 @@ declare const errorRecoveryStrategies: {
     skipUntil(tokens: string | string[]): RecoveryStrategy;
 };
 
-export { type BuildFunction, type ConditionalContext, type ConditionalPredicate, type DebugLevel, ERRORS, type ErrorHandler, type InfixHandler, type MiniToken, type ParseError, type ParseResult, Parser, type ParserSettings, type Pattern, type PrattTable, type PrefixHandler, type RecoveryStrategy, Result, type Rule, type Rules, type Span, type Token, action, between, buildPrattTable, choice, conditional, createRule, delimited, error, errorRecoveryStrategies, globalTokenMap, ifCondition, lookahead, loud, not, oneOrMore, optional, parse, peek, pratt, registerTokenMap, repeat, rule, seq, silent, surrounded, token, when, zeroOrMore, zeroOrOne };
+export { type BuildFunction, type ConditionalContext, type ConditionalPredicate, type DebugLevel, ERRORS, type ErrorHandler, type InfixHandler, type MiniToken, type ParseError, type ParseResult, Parser, type ParserSettings, type Pattern, type PrattTable, type PrefixHandler, type RecoveryStrategy, Result, type Rule, type Rules, action, between, buildPrattTable, choice, conditional, createRule, delimited, error, errorRecoveryStrategies, globalTokenMap, ifCondition, lookahead, loud, not, oneOrMore, optional, parse, peek, pratt, registerTokenMap, repeat, rule, seq, silent, surrounded, token, when, zeroOrMore, zeroOrOne };

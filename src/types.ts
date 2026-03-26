@@ -6,8 +6,9 @@
 
 // ╔════════════════════════════════════════ PACK ════════════════════════════════════════╗
 
-    import type { Parser } from './core';
-    import { Result } from './result';
+    import type { Parser }      from './core';
+    import type { Token, Span } from '@langpkg/lexer';
+    import { Result }           from './result';
 
     export { Result };
 
@@ -21,20 +22,11 @@
     // Token & position
     // ---------------------------------------------------------------------------
 
-    export interface Token {
-        kind            : string
-        value           : string | null
-        span            : Span
-    }
+    export type { Token, Span };
 
     export interface MiniToken {
         kind            : string
         value           : string | null
-    }
-
-    export interface Span {
-        start           : number
-        end             : number
     }
 
     // ---------------------------------------------------------------------------

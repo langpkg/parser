@@ -19,8 +19,8 @@
 
     export interface TokenSource {
         source_kind         : 'token-source'
-        kind                : string
-        value?              : string
+        type                : string
+        text?               : string
         span?               : Types.Span
     }
 
@@ -105,8 +105,8 @@
             static createAsToken(status: ResultStatus, source: Types.Token | null, span: Types.Span): Result {
                 return Result.create(status, {
                     source_kind : 'token-source',
-                    kind        : source?.kind  ?? 'unset',
-                    value       : source?.value ?? undefined,
+                    type        : source?.type  ?? 'unset',
+                    text        : source?.text ?? undefined,
                     span,
                 }, 'token', span);
             }
@@ -170,7 +170,7 @@
 
         // ┌──────────────────────────────── ──── ──────────────────────────────┐
 
-            getTokenKind()          : string      | undefined   { return this.isToken()             ? (this.source as TokenSource).kind             : undefined; }
+            getTokenType()          : string      | undefined   { return this.isToken()             ? (this.source as TokenSource).type             : undefined; }
             getTokenSpan()          : Types.Span  | undefined   { return this.isToken()             ? (this.source as TokenSource).span             : undefined; }
 
             getOptionalResult()     : Result | null | undefined { return this.isOptionalPassed()    ? (this.source as OptionalSource).result        : undefined; }
@@ -192,14 +192,14 @@
 
             getTokenValue()         : string | null | undefined {
                 if (!this.isToken()) return undefined;
-                const v = (this.source as TokenSource).value;
+                const v = (this.source as TokenSource).text;
                 return v === undefined ? null : v;
             }
 
             getTokenData()          : Types.Token | undefined   {
                 if (!this.isToken()) return undefined;
                 const s = this.source as TokenSource;
-                return { kind: s.kind, value: s.value!, span: s.span! };
+                return { type: s.type, text: s.text!, span: s.span! };
             }
 
         // └────────────────────────────────────────────────────────────────────┘

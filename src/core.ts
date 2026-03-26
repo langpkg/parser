@@ -110,10 +110,10 @@
 
                 if (!tokens.length) return { ast: [], errors: [] };
 
-                const errTok = tokens.find(t => t.kind === 'error');
+                const errTok = tokens.find(t => t.type === 'error');
                 if (errTok) return {
                     ast: [], errors: [this._mkError(Types.ERRORS.LEXICAL_ERROR,
-                        `Unexpected token '${errTok.value}'`, errTok.span, 0, 0, 'lexer')]
+                        `Unexpected token '${errTok.text}'`, errTok.span, 0, 0, 'lexer')]
                 };
 
                 const startRule = this.rules.get(this.settings.startRule);
@@ -174,8 +174,8 @@
                 const ignored = new Set([...this._ignoredSet, ...(extra ?? [])]);
                 for (let i = this.index; i < this.tokens.length; i++) {
                     const t = this.tokens[i];
-                    if (t.kind === kind) return true;
-                    if (!ignored.has(t.kind)) break;
+                    if (t.type === kind) return true;
+                    if (!ignored.has(t.type)) break;
                 }
                 return false;
             }
@@ -185,8 +185,8 @@
                 const start = from < 0 ? this.index : from;
                 for (let i = start - 1; i >= 0; i--) {
                     const t = this.tokens[i];
-                    if (t.kind === kind) return true;
-                    if (!ignored.has(t.kind)) break;
+                    if (t.type === kind) return true;
+                    if (!ignored.has(t.type)) break;
                 }
                 return false;
             }
@@ -308,11 +308,11 @@
 
                     const tok = this.tokens[this.index];
 
-                    if (tok.kind === name) {
-                        if (value !== undefined && tok.value !== value) {
+                    if (tok.type === name) {
+                        if (value !== undefined && tok.text !== value) {
                             if (silent) return FAIL;
                             throw this._mkError(Types.ERRORS.TOKEN_MISMATCH,
-                                `Expected '${name}' with value '${value}', got '${tok.value}'`,
+                                `Expected '${name}' with value '${value}', got '${tok.text}'`,
                                 tok.span, 0, this.index, this.lastHandledRule);
                         }
                         this.index++;
@@ -323,7 +323,7 @@
                     if (silent) return FAIL;
 
                     const err = this._mkError(Types.ERRORS.TOKEN_MISMATCH,
-                        `Expected '${name}', got '${tok.kind}'`,
+                        `Expected '${name}', got '${tok.type}'`,
                         tok.span, 0, this.index, this.lastHandledRule);
 
                     // apply custom error if parent rule has one
@@ -427,7 +427,7 @@
                     // LL(1) fast path: if current token is unambiguously in one alternative,
                     // go there directly without trying others.
                     if (this.index < this.tokens.length) {
-                        const kind = this.tokens[this.index].kind;
+                        const kind = this.tokens[this.index].type;
                         let unique = -1;
                         let ambiguous = false;
 
@@ -558,12 +558,12 @@
                     }
 
                     const tok = this.tokens[this.index];
-                    const prefix = table.prefix.get(tok.kind);
+                    const prefix = table.prefix.get(tok.type);
 
                     if (!prefix) {
                         if (silent) return FAIL;
                         throw this._mkError(Types.ERRORS.PRATT_NO_PREFIX,
-                            `Unexpected token '${tok.kind}' in expression`, tok.span, 0, this.index, 'pratt');
+                            `Unexpected token '${tok.type}' in expression`, tok.span, 0, this.index, 'pratt');
                     }
 
                     this.index++;
@@ -575,7 +575,7 @@
                         if (this.index >= this.tokens.length) break;
 
                         const next = this.tokens[this.index];
-                        const infix = table.infix.get(next.kind);
+                        const infix = table.infix.get(next.type);
                         if (!infix || infix.lbp <= 0) break;
 
                         // Check if caller wants to stop here (binding power check)
@@ -839,7 +839,7 @@
 
             private _skipIgnored(extra?: string[]): void {
                 const set = extra ? new Set([...this._ignoredSet, ...extra]) : this._ignoredSet;
-                while (this.index < this.tokens.length && set.has(this.tokens[this.index].kind)) {
+                while (this.index < this.tokens.length && set.has(this.tokens[this.index].type)) {
                     this.index++;
                     this.stats.tokensProcessed++;
                 }

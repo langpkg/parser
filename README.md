@@ -13,7 +13,7 @@
         <b>Up to ~10x faster than chevrotain</b>.
         <br>
     </p>
-    <img data="version" src="https://img.shields.io/badge/v-0.1.0-black"/>
+    <img data="version" src="https://img.shields.io/badge/v-0.1.1-black"/>
     <a href="https://github.com/langpkg"><img src="https://img.shields.io/badge/@-langpkg-black"/></a>
     <br>
     <img src="https://img.shields.io/badge/zero-dependencies-blue"/>

@@ -32,11 +32,11 @@
 
     let _pos = 0;
 
-    function tok(kind: string, value = kind): Token {
+    function tok(type: string, text = type): Token {
         const start = _pos;
-        const end = _pos + value.length;
+        const end = _pos + text.length;
         _pos = end + 1;
-        return { kind, value, span: { start, end } };
+        return { type, text, span: { start, end } };
     }
 
     /** Build a flat token array, resetting the position counter. */
@@ -290,14 +290,14 @@
 
     describe('token matching', () => {
 
-        test('matches by kind', () => {
+        test('matches by type', () => {
             const rules = [createRule('root', token('NUM'))];
             const r = parse(toks(['NUM', '42']), rules, S);
             expect(r.errors).toHaveLength(0);
             expect(r.ast[0]?.isToken()).toBe(true);
         });
 
-        test('matches by kind+value', () => {
+        test('matches by type+value', () => {
             const rules = [createRule('root', token('KW', 'if'))];
             const r = parse(toks(['KW', 'if']), rules, S);
             expect(r.errors).toHaveLength(0);
@@ -309,13 +309,13 @@
             expect(r.errors.length).toBeGreaterThan(0);
         });
 
-        test('wrong kind fails', () => {
+        test('wrong type fails', () => {
             const rules = [createRule('root', token('NUM'))];
             const r = parse(toks(['IDENT', 'x']), rules, S);
             expect(r.errors.length).toBeGreaterThan(0);
         });
 
-        test('wrong token kind fails', () => {
+        test('wrong token type fails', () => {
             const rules = [createRule('root', token('NUM'))];
             const r = parse(toks(['IDENT', 'x']), rules, S);
             expect(r.errors.length).toBeGreaterThan(0);
@@ -794,7 +794,7 @@
 
         test('lexer error token in stream returns lexical error', () => {
             const rules = [createRule('root', token('A'))];
-            const errTok = { kind: 'error', value: '@', span: { start: 0, end: 1 } };
+            const errTok = { type: 'error', text: '@', span: { start: 0, end: 1 } };
             const r = parse([errTok], rules, S);
             expect(r.errors[0]?.code).toBe('LEXICAL_ERROR');
         });
@@ -870,20 +870,20 @@
 
         test('createAsToken + predicates', () => {
             const span = { start: 0, end: 1 };
-            const tok2 = { kind: 'A', value: 'a', span };
+            const tok2 = { type: 'A', text: 'a', span };
             const r = Result.createAsToken('passed', tok2, span);
             expect(r.isPassed()).toBe(true);
             expect(r.isFailed()).toBe(false);
             expect(r.isToken()).toBe(true);
-            expect(r.getTokenKind()).toBe('A');
+            expect(r.getTokenType()).toBe('A');
             expect(r.getTokenValue()).toBe('a');
             expect(r.getTokenSpan()).toEqual(span);
-            expect(r.getTokenData()?.kind).toBe('A');
+            expect(r.getTokenData()?.type).toBe('A');
         });
 
         test('createAsOptional - passed with result', () => {
             const span = { start: 0, end: 1 };
-            const inner = Result.createAsToken('passed', { kind: 'A', value: 'a', span }, span);
+            const inner = Result.createAsToken('passed', { type: 'A', text: 'a', span }, span);
             const r = Result.createAsOptional('passed', inner, span);
             expect(r.isOptional()).toBe(true);
             expect(r.isOptionalPassed()).toBe(true);
@@ -902,7 +902,7 @@
 
         test('createAsChoice', () => {
             const span = { start: 0, end: 1 };
-            const inner = Result.createAsToken('passed', { kind: 'A', value: 'a', span }, span);
+            const inner = Result.createAsToken('passed', { type: 'A', text: 'a', span }, span);
             const r = Result.createAsChoice('passed', inner, 2, span);
             expect(r.isChoice()).toBe(true);
             expect(r.getChoiceIndex()).toBe(2);
@@ -912,8 +912,8 @@
         test('createAsRepeat', () => {
             const span = { start: 0, end: 1 };
             const items = [
-                Result.createAsToken('passed', { kind: 'A', value: 'a', span }, span),
-                Result.createAsToken('passed', { kind: 'A', value: 'a', span }, span),
+                Result.createAsToken('passed', { type: 'A', text: 'a', span }, span),
+                Result.createAsToken('passed', { type: 'A', text: 'a', span }, span),
             ];
             const r = Result.createAsRepeat('passed', items, span, false);
             expect(r.isRepeat()).toBe(true);
@@ -924,7 +924,7 @@
 
         test('createAsSequence', () => {
             const span = { start: 0, end: 1 };
-            const items = [Result.createAsToken('passed', { kind: 'A', value: 'a', span }, span)];
+            const items = [Result.createAsToken('passed', { type: 'A', text: 'a', span }, span)];
             const r = Result.createAsSequence('passed', items, span);
             expect(r.isSequence()).toBe(true);
             expect(r.getSequenceCount()).toBe(1);
@@ -933,7 +933,7 @@
 
         test('createAsPratt', () => {
             const span = { start: 0, end: 1 };
-            const items = [Result.createAsToken('passed', { kind: 'A', value: 'a', span }, span)];
+            const items = [Result.createAsToken('passed', { type: 'A', text: 'a', span }, span)];
             const r = Result.createAsPratt('passed', items, span);
             expect(r.isPratt()).toBe(true);
             expect(r.getPrattResult()).toBe(items);
@@ -986,7 +986,7 @@
 
         test('getters return undefined for wrong mode', () => {
             const span = { start: 0, end: 1 };
-            const tok2 = Result.createAsToken('passed', { kind: 'A', value: 'a', span }, span);
+            const tok2 = Result.createAsToken('passed', { type: 'A', text: 'a', span }, span);
             expect(tok2.getOptionalResult()).toBeUndefined();
             expect(tok2.getChoiceIndex()).toBeUndefined();
             expect(tok2.getRepeatCount()).toBeUndefined();
@@ -996,10 +996,10 @@
             expect(tok2.getCustomName()).toBeUndefined();
         });
 
-        test('token with null value: getTokenValue returns null', () => {
+        test('token with null text: getTokenValue returns empty string', () => {
             const span = { start: 0, end: 1 };
-            const r = Result.createAsToken('passed', { kind: 'A', value: null, span }, span);
-            expect(r.getTokenValue()).toBeNull();
+            const r = Result.createAsToken('passed', { type: 'A', text: '', span }, span);
+            expect(r.getTokenValue()).toBe('');
         });
 
         test('null source token: getTokenValue returns null', () => {
@@ -1376,7 +1376,7 @@
             const rules = [
                 createRule('root', seq(
                     token('IDENT', 'foo'),
-                    action((p) => { tokenValue = p.tokens[0]?.value ?? null; }),
+                    action((p) => { tokenValue = p.tokens[0]?.text ?? null; }),
                 )),
             ];
             parse(toks(['IDENT', 'foo']), rules, S);
