@@ -1,4 +1,4 @@
-<!-- ╔══════════════════════════════ BEG ══════════════════════════════╗ -->
+<!-- ╔═══════════════════════════ BEG ════════════════════════════╗ -->
 
 <br>
 <div align="center">
@@ -10,14 +10,9 @@
 <div align="center">
     <p align="center" style="font-style:italic; color:gray;">
         Fast, general-purpose parser for building language tooling.<br>
-        <b>Up to ~10x faster than chevrotain</b>.
-        <br>
     </p>
-    <img data="version" src="https://img.shields.io/badge/v-0.1.2-black"/>
+    <img data="version" src="https://img.shields.io/badge/v-0.1.3-black"/>
     <a href="https://github.com/langpkg"><img src="https://img.shields.io/badge/@-langpkg-black"/></a>
-    <br>
-    <img src="https://img.shields.io/badge/zero-dependencies-blue"/>
-    <img src="https://img.shields.io/badge/~10x-Faster-blue"/>
     <br>
     <img src="https://img.shields.io/badge/coverage-100%25-brightgreen" alt="Test Coverage" />
     <img src="https://img.shields.io/github/issues/langpkg/parser?style=flat" alt="Github Repo Issues" />
@@ -25,23 +20,51 @@
 </div>
 <br>
 
-<!-- ╚═════════════════════════════════════════════════════════════════╝ -->
+<!-- ╚════════════════════════════════════════════════════════════╝ -->
 
 
 
-<!-- ╔══════════════════════════════ DOC ══════════════════════════════╗ -->
+<!-- ╔═══════════════════════════ DOC ════════════════════════════╗ -->
 
-- ## Benchmark
+- ## Quick Start 🔥
 
-    ![bench](./assets/img/bench.png)
+    > Install [pkg](https://github.com/langpkg/pkg) first.
 
-    > _**To run the benchmark, use: `bun run bench`**_
+    ```bash
+    pkg i @langpkg/parser @langpkg/lexer
+    ```
 
-    > _**To check the benchmark code, read: [`./bench/index.bench.ts`](./bench/index.bench.ts).**_
+    - ### Define Your Grammar
+
+        ```typescript
+        import { createRule, token, seq, choice, rule } from '@langpkg/parser';
+
+        const rules = [
+            createRule('expr', seq(
+                token('NUM'),
+                choice(
+                    seq(token('PLUS'), rule('expr')),
+                    seq(token('MULT'), rule('expr')),
+                ),
+            )),
+        ];
+        ```
+
+    - ### Tokenize & Parse
+
+        ```typescript
+        import { compile } from '@langpkg/lexer';
+
+        const lexer = compile({ /* tokens */ });
+        const tokens = lexer.tokenize(source);
+
+        const { ast, errors } = parse(tokens, rules, {
+            startRule: 'expr',
+            errorRecovery: { mode: 'resilient' },
+        });
+        ```
 
     <br>
-    <br>
-
 
 - ## Core Features 🎯
 
@@ -203,101 +226,10 @@
         ```
 
     <br>
-    <br>
 
-- ## Quick Start 🔥
+- ## Docs
 
-    - ### 1. Install
-
-        ```bash
-        bun add @langpkg/parser @langpkg/lexer
-        # or
-        npm install @langpkg/parser @langpkg/lexer
-        ```
-
-    - ### 2. Define Your Grammar
-
-        ```typescript
-        import { createRule, token, seq, choice, rule } from '@langpkg/parser';
-
-        const rules = [
-            createRule('expr', seq(
-                token('NUM'),
-                choice(
-                    seq(token('PLUS'), rule('expr')),
-                    seq(token('MULT'), rule('expr')),
-                ),
-            )),
-        ];
-        ```
-
-    - ### 3. Tokenize & Parse
-
-        ```typescript
-        import { compile } from '@langpkg/lexer';
-
-        const lexer = compile({ /* tokens */ });
-        const tokens = lexer.tokenize(source);
-
-        const { ast, errors } = parse(tokens, rules, {
-            startRule: 'expr',
-            errorRecovery: { mode: 'resilient' },
-        });
-        ```
-
-    <br>
-    <br>
-
-- ## Documentation 📑
-
-    - ### Why Fast?
-
-        - #### 1. **Compile-Time LL(1) Optimization**
-            ```typescript
-            // Once at Parser construction
-            _buildLookaheadSets()  // Computes first-sets for each rule
-            ↓
-            choice(a, b, c)        // O(1) branch selection (no backtracking)
-            ```
-
-        - #### 2. **Pre-Compiled Rule Closures**
-            ```typescript
-            // Each rule compiled to a JS function at parser init
-            const ruleExpr = compiled(() => {
-                // No interpreter switch in hot path
-                // Direct method calls
-            });
-            ```
-
-        - #### 3. **Integer-Keyed Memoization**
-            ```typescript
-            // Key = (ruleIndex << 16) | tokenIndex
-            // Benefits:
-            // ✅ No string concatenation per lookup (~3x faster)
-            // ✅ O(1) access (Map.get with number key)
-            // ✅ Supports 65k rules × 65k tokens
-            ```
-
-        - #### 4. **Pratt Expression Parsing**
-            ```typescript
-            // Dedicated precedence climbing for expressions
-            // Not recursive descent (cheaper stack frames)
-            // Proper operator associativity handling
-            ```
-
-        - #### 5. **Zero-Alloc Backtracking**
-            ```typescript
-            // On failed pattern, return shared FAIL sentinel
-            // Restore token index on way out
-            // No memory allocation on backtrack attempts
-            ```
-
-        <div align="center"> <img src="./assets/img/line.png" alt="line" style="display: block; margin-top:20px;margin-bottom:20px;width:500px;"/> </div>
-        <br>
-
-    - ### API
-
-      - #### Core Functions
+    - #### Core Functions
 
         | Function                              | Purpose                              |
         | ------------------------------------- | ------------------------------------ |
@@ -327,62 +259,50 @@
         | `loud(pattern)`                       | Show in AST                          |
         | `registerTokenMap(map)`               | String shorthand for tokens          |
 
-        <div align="center"> <img src="./assets/img/line.png" alt="line" style="display: block; margin-top:20px;margin-bottom:20px;width:500px;"/> </div>
-        <br>
 
-      - #### Types
-
+    - #### Types
 
         ```typescript
         // Token with position info
         interface Token {
-            kind: string;
-            value: string | null;
-            span: { start: number; end: number };
+            kind            : string;
+            value           : string | null;
+            span            : { start: number; end: number };
         }
 
         // Parse result
         interface ParseResult {
-            ast: Result[];
-            errors: ParseError[];
-            statistics?: ParseStatistics;
+            ast             : Result[];
+            errors          : ParseError[];
+            statistics?     : ParseStatistics;
         }
 
         // Pattern definition
         interface Pattern {
-            type: 'token' | 'rule' | 'seq' | 'choice' | 'repeat' | ...;
-            silent?: boolean;
-            name?: string;
-            params?: Record<string, unknown>;
+            type            : 'token' | 'rule' | 'seq' | 'choice' | 'repeat' | ...;
+            silent?         : boolean;
+            name?           : string;
+            params?         : Record<string, unknown>;
             // ... (12+ pattern-specific fields)
         }
 
         // Rule definition
         interface Rule {
-            name: string;
-            pattern: Pattern;
-            options?: {
-                build?: (result: Result, parser: Parser) => Result;
-                errors?: ErrorHandler[];
-                recovery?: RecoveryStrategy;
+            name            : string;
+            pattern         : Pattern;
+            options?        : {
+                build?      : (result: Result, parser: Parser) => Result;
+                errors?     : ErrorHandler[];
+                recovery?   : RecoveryStrategy;
             };
         }
         ```
 
-    <br>
-    <br>
-
-- ## Credits ❤️
-
-    > Inspired by [@je-es/parser](https://github.com/je-es/parser) and [Chevrotain](https://github.com/chevrotain/chevrotain).
-
-    > Built as part of the Mine language compiler toolchain.
-
-<!-- ╚═════════════════════════════════════════════════════════════════╝ -->
+<!-- ╚════════════════════════════════════════════════════════════╝ -->
 
 
 
-<!-- ╔══════════════════════════════ END ══════════════════════════════╗ -->
+<!-- ╔═══════════════════════════ END ════════════════════════════╗ -->
 
 <br>
 <br>
@@ -393,4 +313,4 @@
     <a href="https://github.com/maysara-elshewehy"><img src="https://img.shields.io/badge/by-Maysara-black"/></a>
 </div>
 
-<!-- ╚═════════════════════════════════════════════════════════════════╝ -->
+<!-- ╚════════════════════════════════════════════════════════════╝ -->

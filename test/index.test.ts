@@ -9,20 +9,43 @@
 
 // ╔════════════════════════════════════════ PACK ════════════════════════════════════════╗
 
-    import { describe, test, expect } from 'bun:test';
-    import {
-        parse, createRule, Parser,
-        token, seq, choice, optional, repeat,
-        oneOrMore, zeroOrMore, zeroOrOne,
-        rule, silent, loud, pratt, buildPrattTable,
-        conditional, when, ifCondition,
-        action, not, lookahead, peek,
-        delimited, surrounded, between,
-        error, errorRecoveryStrategies,
-        registerTokenMap,
-        Result,
-    } from '../src/index';
-    import type { Token, Rules, ParserSettings, ParseResult, ConditionalContext } from '../src/types';
+    import { parse,
+             createRule,
+             Parser,
+             token,
+             seq,
+             choice,
+             optional,
+             repeat,
+             oneOrMore,
+             zeroOrMore,
+             zeroOrOne,
+             rule,
+             silent,
+             loud,
+             pratt,
+             buildPrattTable,
+             conditional,
+             when,
+             ifCondition,
+             action,
+             not,
+             lookahead,
+             peek,
+             delimited,
+             surrounded,
+             between,
+             error,
+             errorRecoveryStrategies,
+             registerTokenMap,
+             Result }                                                   from '../src/index';
+
+    import { describe, test, expect }                                   from 'bun:test';
+
+    import type { Token,
+                  Rules,
+                  ParserSettings,
+                  ConditionalContext }                                  from '../src/types';
 
 // ╚══════════════════════════════════════════════════════════════════════════════════════╝
 

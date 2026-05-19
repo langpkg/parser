@@ -18,49 +18,49 @@
     export type ResultMode   = 'unset' | 'token'  | 'optional' | 'choice' | 'repeat' | 'seq' | 'pratt' | 'custom';
 
     export interface TokenSource {
-        source_kind         : 'token-source'
-        type                : string
-        text?               : string
-        span?               : Types.Span
+        source_kind : 'token-source'
+        type        : string
+        text?       : string
+        span?       : Types.Span
     }
 
     export interface OptionalSource {
-        source_kind         : 'optional-source'
-        result              : Result | null
+        source_kind : 'optional-source'
+        result      : Result | null
     }
 
     export interface ChoiceSource {
-        source_kind         : 'choice-source'
-        atIndex             : number
-        result              : Result | null
+        source_kind : 'choice-source'
+        atIndex     : number
+        result      : Result | null
     }
 
     export interface RepeatSource {
-        source_kind         : 'repeat-source'
-        endsWithSep         : boolean
-        result              : Result[]
+        source_kind : 'repeat-source'
+        endsWithSep : boolean
+        result      : Result[]
     }
 
     export interface SequenceSource {
-        source_kind         : 'sequence-source'
-        result              : Result[]
+        source_kind : 'sequence-source'
+        result      : Result[]
     }
 
     export interface PrattSource {
-        source_kind         : 'pratt-source'
-        result              : Result[] // [left, op-token, right] per fold
+        source_kind : 'pratt-source'
+        result      : Result[] // [left, op-token, right] per fold
     }
 
     export interface CustomSource {
-        source_kind         : 'custom-source'
-        name                : string
-        data: unknown
+        source_kind : 'custom-source'
+        name        : string
+        data        : unknown
     }
 
     export type ResultSource =
-        | TokenSource  | OptionalSource | ChoiceSource
-        | RepeatSource | SequenceSource | PrattSource
-        | CustomSource | null;
+    | TokenSource  | OptionalSource | ChoiceSource
+    | RepeatSource | SequenceSource | PrattSource
+    | CustomSource | null;
 
 // ╚══════════════════════════════════════════════════════════════════════════════════════╝
 
@@ -72,23 +72,23 @@
 
         // ┌──────────────────────────────── INIT ──────────────────────────────┐
 
-        public span     : Types.Span = { start: -99, end: -99 };
-        public status   : ResultStatus = 'unset';
-        public source   : ResultSource = null;
-        public mode     : ResultMode = 'unset';
-        public errors   : Types.ParseError[] = [];
+            public span     : Types.Span = { start: -99, end: -99 };
+            public status   : ResultStatus = 'unset';
+            public source   : ResultSource = null;
+            public mode     : ResultMode = 'unset';
+            public errors   : Types.ParseError[] = [];
 
-        constructor(
-            status      : ResultStatus,
-            source      : ResultSource | null,
-            mode        : ResultMode,
-            span        : Types.Span,
-        ) {
-            this.status = status;
-            this.source = source;
-            this.mode   = mode;
-            this.span   = span;
-        }
+            constructor(
+                status      : ResultStatus,
+                source      : ResultSource | null,
+                mode        : ResultMode,
+                span        : Types.Span,
+            ) {
+                this.status = status;
+                this.source = source;
+                this.mode   = mode;
+                this.span   = span;
+            }
 
         // └────────────────────────────────────────────────────────────────────┘
 

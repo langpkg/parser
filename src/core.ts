@@ -6,8 +6,8 @@
 
 // ╔════════════════════════════════════════ PACK ════════════════════════════════════════╗
 
-    import * as Types from './types';
-    import { Result } from './result';
+    import { Result }    from './result';
+    import * as Types    from './types';
 
 // ╚══════════════════════════════════════════════════════════════════════════════════════╝
 
@@ -137,8 +137,8 @@
 
                         if (result.isPassed()) {
                             const final = startRule.options?.build
-                                ? this._safeBuild(startRule.options.build, result)
-                                : result;
+                            ? this._safeBuild(startRule.options.build, result)
+                            : result;
                             if (final) this.ast.push(final);
                         }
 
@@ -225,8 +225,8 @@
 
                 switch (p.type) {
                     case 'token':
-                        out.add(p.name!);
-                        break;
+                    out.add(p.name!);
+                    break;
 
                     case 'rule': {
                         const set = this._laTable.get(p.name!);
@@ -235,34 +235,34 @@
                     }
 
                     case 'seq':
-                        // First of seq = first of first non-optional element
-                        for (const child of (p.patterns ?? [])) {
-                            for (const k of this._firstOfPattern(child)) out.add(k);
-                            if (child.type !== 'optional') break;   // non-optional stops propagation
-                        }
-                        break;
+                    // First of seq = first of first non-optional element
+                    for (const child of (p.patterns ?? [])) {
+                        for (const k of this._firstOfPattern(child)) out.add(k);
+                        if (child.type !== 'optional') break;   // non-optional stops propagation
+                    }
+                    break;
 
                     case 'choice':
-                        for (const child of (p.patterns ?? []))
-                            for (const k of this._firstOfPattern(child)) out.add(k);
-                        break;
+                    for (const child of (p.patterns ?? []))
+                    for (const k of this._firstOfPattern(child)) out.add(k);
+                    break;
 
                     case 'optional':
                     case 'repeat':
                     case 'conditional':
                     case 'not':
                     case 'lookahead':
-                        if (p.pattern) for (const k of this._firstOfPattern(p.pattern)) out.add(k);
-                        break;
+                    if (p.pattern) for (const k of this._firstOfPattern(p.pattern)) out.add(k);
+                    break;
 
                     case 'action':
-                        // Action doesn't consume tokens, so it can't start a pattern
-                        // The lookahead set remains empty
-                        break;
+                    // Action doesn't consume tokens, so it can't start a pattern
+                    // The lookahead set remains empty
+                    break;
 
                     case 'pratt':
-                        if (p.table) for (const k of p.table.prefix.keys()) out.add(k);
-                        break;
+                    if (p.table) for (const k of p.table.prefix.keys()) out.add(k);
+                    break;
                 }
 
                 return out;
@@ -303,7 +303,7 @@
                     if (this.index >= this.tokens.length) {
                         if (silent) return FAIL;
                         throw this._mkError(Types.ERRORS.TOKEN_EXPECTED_EOF,
-                            `Expected '${name}', got EOF`, this._span(), 0, this.index, this.lastHandledRule);
+                        `Expected '${name}', got EOF`, this._span(), 0, this.index, this.lastHandledRule);
                     }
 
                     const tok = this.tokens[this.index];
@@ -312,8 +312,8 @@
                         if (value !== undefined && tok.text !== value) {
                             if (silent) return FAIL;
                             throw this._mkError(Types.ERRORS.TOKEN_MISMATCH,
-                                `Expected '${name}' with value '${value}', got '${tok.text}'`,
-                                tok.span, 0, this.index, this.lastHandledRule);
+                            `Expected '${name}' with value '${value}', got '${tok.text}'`,
+                            tok.span, 0, this.index, this.lastHandledRule);
                         }
                         this.index++;
                         this.stats.tokensProcessed++;
@@ -323,8 +323,8 @@
                     if (silent) return FAIL;
 
                     const err = this._mkError(Types.ERRORS.TOKEN_MISMATCH,
-                        `Expected '${name}', got '${tok.type}'`,
-                        tok.span, 0, this.index, this.lastHandledRule);
+                    `Expected '${name}', got '${tok.type}'`,
+                    tok.span, 0, this.index, this.lastHandledRule);
 
                     // apply custom error if parent rule has one
                     throw this._customErrorOr(parent, err);
@@ -366,7 +366,7 @@
                         if (silent) return FAIL;
 
                         const err = this._mkError(Types.ERRORS.RULE_FAILED,
-                            `Rule '${name}' failed`, this._span(), 0, this.lastVisitedIndex, name);
+                        `Rule '${name}' failed`, this._span(), 0, this.lastVisitedIndex, name);
                         throw this._customErrorOr(parent, err);
                     }
 
@@ -401,8 +401,8 @@
                             if (silent) return FAIL;
 
                             const err = this._mkError(Types.ERRORS.SEQUENCE_FAILED,
-                                `Sequence failed at element ${i + 1}/${fns.length}`,
-                                this._span(), i, this.lastVisitedIndex, this.lastHandledRule);
+                            `Sequence failed at element ${i + 1}/${fns.length}`,
+                            this._span(), i, this.lastVisitedIndex, this.lastHandledRule);
                             throw this._customErrorOr(parent, err);
                         }
                         results.push(r);
@@ -472,8 +472,8 @@
                     if (silent) return FAIL;
 
                     const err = this._mkError(Types.ERRORS.CHOICE_ALL_FAILED,
-                        `Expected one of: ${alts.map(a => this._patStr(a)).join(' | ')}`,
-                        this._span(), best?.altIdx ?? 0, this.lastVisitedIndex, this.lastHandledRule);
+                    `Expected one of: ${alts.map(a => this._patStr(a)).join(' | ')}`,
+                    this._span(), best?.altIdx ?? 0, this.lastVisitedIndex, this.lastHandledRule);
                     throw this._customErrorOr(parent, err);
                 };
             }
@@ -538,8 +538,8 @@
                         this.index = startIndex;
                         if (silent) return FAIL;
                         throw this._mkError(Types.ERRORS.REPEAT_MIN_NOT_MET,
-                            `Expected at least ${min} occurrences, got ${results.length}`,
-                            this._span(), 0, this.index, this.lastHandledRule);
+                        `Expected at least ${min} occurrences, got ${results.length}`,
+                        this._span(), 0, this.index, this.lastHandledRule);
                     }
 
                     return Result.createAsRepeat('passed', results, this._spanOf(results), endsWithSep);
@@ -554,7 +554,7 @@
                     if (this.index >= this.tokens.length) {
                         if (silent) return FAIL;
                         throw this._mkError(Types.ERRORS.PRATT_NO_PREFIX,
-                            'Expected an expression', this._span(), 0, this.index, 'pratt');
+                        'Expected an expression', this._span(), 0, this.index, 'pratt');
                     }
 
                     const tok = this.tokens[this.index];
@@ -563,7 +563,7 @@
                     if (!prefix) {
                         if (silent) return FAIL;
                         throw this._mkError(Types.ERRORS.PRATT_NO_PREFIX,
-                            `Unexpected token '${tok.type}' in expression`, tok.span, 0, this.index, 'pratt');
+                        `Unexpected token '${tok.type}' in expression`, tok.span, 0, this.index, 'pratt');
                     }
 
                     this.index++;
@@ -641,7 +641,7 @@
                             if (silent) return FAIL;
 
                             const err = this._mkError(Types.ERRORS.RULE_FAILED,
-                                `Conditional predicate returned false`, this._span(), 0, this.lastVisitedIndex, this.lastHandledRule);
+                            `Conditional predicate returned false`, this._span(), 0, this.lastVisitedIndex, this.lastHandledRule);
                             throw this._customErrorOr(parent, err);
                         }
                     } catch (e) {
@@ -651,7 +651,7 @@
 
                         const errorMsg = e instanceof Error ? e.message : String(e);
                         const err = this._mkError(Types.ERRORS.RULE_FAILED,
-                            `Conditional predicate threw: ${errorMsg}`, this._span(), 0, this.lastVisitedIndex, this.lastHandledRule);
+                        `Conditional predicate threw: ${errorMsg}`, this._span(), 0, this.lastVisitedIndex, this.lastHandledRule);
                         throw this._customErrorOr(parent, err);
                     }
                 };
@@ -670,7 +670,7 @@
                         // If action throws, convert to parse error
                         const errorMsg = e instanceof Error ? e.message : String(e);
                         throw this._mkError(Types.ERRORS.RULE_FAILED,
-                            `Action function threw: ${errorMsg}`, this._span(), 0, this.index, 'action');
+                        `Action function threw: ${errorMsg}`, this._span(), 0, this.index, 'action');
                     }
 
                     // Actions always succeed with no token consumption
@@ -696,7 +696,7 @@
                         if (silent) return FAIL;
 
                         const err = this._mkError(Types.ERRORS.RULE_FAILED,
-                            `NOT pattern failed - inner pattern matched`, this._span(), 0, startIndex, this.lastHandledRule);
+                        `NOT pattern failed - inner pattern matched`, this._span(), 0, startIndex, this.lastHandledRule);
                         throw this._customErrorOr(parent, err);
                     } else {
                         // Inner pattern did NOT match - NOT succeeds
@@ -729,7 +729,7 @@
                         if (silent) return FAIL;
 
                         const err = this._mkError(Types.ERRORS.RULE_FAILED,
-                            `Lookahead pattern failed`, this._span(), 0, startIndex, this.lastHandledRule);
+                        `Lookahead pattern failed`, this._span(), 0, startIndex, this.lastHandledRule);
                         throw this._customErrorOr(parent, err);
                     }
                 };
@@ -783,7 +783,7 @@
                         catch { /* ignore */ }
                     }
                     if (match) return this._mkError(h.code ?? Types.ERRORS.CUSTOM_ERROR, h.msg,
-                        def.span, def.failedAt, def.tokenIndex, def.prevRule, def.prevInnerRule);
+                    def.span, def.failedAt, def.tokenIndex, def.prevRule, def.prevInnerRule);
                 }
                 return def;
             }
@@ -803,7 +803,7 @@
                     this._addError(e as Types.ParseError);
                 } else if (e instanceof Error) {
                     this._addError(this._mkError(Types.ERRORS.FATAL_ERROR, e.message,
-                        this._span(), 0, this.index, this.lastHandledRule));
+                    this._span(), 0, this.index, this.lastHandledRule));
                 }
             }
 
@@ -811,8 +811,8 @@
                 try { return fn(r, this); }
                 catch (e) {
                     const err = this._mkError(Types.ERRORS.BUILD_FUNCTION_FAILED,
-                        e instanceof Error ? e.message : String(e),
-                        this._span(), 0, this.index, this.lastHandledRule);
+                    e instanceof Error ? e.message : String(e),
+                    this._span(), 0, this.index, this.lastHandledRule);
                     this._addError(err);
                     return r;
                 }
@@ -868,7 +868,7 @@
 
                 const checkPattern = (p: Types.Pattern, ruleName: string): void => {
                     if (p.type === 'rule' && !names.has(p.name!))
-                        issues.push(`Rule '${ruleName}' references undefined rule '${p.name}'`);
+                    issues.push(`Rule '${ruleName}' references undefined rule '${p.name}'`);
                     for (const child of [p.pattern, ...(p.patterns ?? [])]) {
                         if (child) checkPattern(child, ruleName);
                     }
@@ -878,7 +878,7 @@
                 for (const [name, rule] of this.rules) checkPattern(rule.pattern, name);
 
                 if (!this.rules.has(this.settings.startRule))
-                    issues.push(`Start rule '${this.settings.startRule}' is not defined`);
+                issues.push(`Start rule '${this.settings.startRule}' is not defined`);
 
                 return issues;
             }
